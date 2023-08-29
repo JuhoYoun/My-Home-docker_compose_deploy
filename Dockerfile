@@ -1,8 +1,10 @@
 FROM python:3.9.0
 
+RUN mkdir /root/.ssh/
+
 WORKDIR /home/
 
-RUN git clone git@github.com:JuhoYoun/My-Home-docker_compose_deploy.git
+RUN git clone https://github.com/JuhoYoun/My-Home-docker_compose_deploy.git
 
 WORKDIR /home/My-Home-docker_compose_deploy/
 
