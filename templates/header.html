@@ -1,0 +1,36 @@
+<div class="jake_header">
+    <div>
+        <h1 class="jake_logo">Jake's Home</h1>
+    </div>
+    <div class="header_nav_bar">
+        <a href="{% url 'articleapp:list' %}" class="header_nav">
+            <span>Articles</span>
+        </a>
+        <a href="{% url 'projectapp:list' %}" class="header_nav">
+            <span>Project</span>
+        </a>
+        {% if not user.is_authenticated %}
+        <!-- 이 경우 Logout 과 같이 next 인자를 넘겨주지 않았는데 login 화면에서 Login을 한번 더 누르면 url이 꼬였기 때문이다.-->
+        <!-- 또한 Login에 next 인자를 넘겨준다고 해도 여기 Login anker를 클릭하고 들어가는 경우 말고 주소창에 직접 /account/login 을
+        치고 로그인 화면으로 가는 경우 next 인자가  전달되지 않는다. 때문에 우리는 어찌됬든 LOGIN_REDIRECT_URL 을 설정 해줘야한다-->
+        <a href="{% url 'accountapp:login' %}" class="header_nav">
+            <span>Login</span>
+        </a>
+        <a href="{% url 'accountapp:create' %}" class="header_nav">
+            <span>Sign Up</span>
+        </a>
+        {% else %}
+        <!-- Login/Logout 할 때 get 방식으로 현재 위치 값을 가지는 next라는 인자를 넘겨줄 수 있다. Login/Logout 후 원래 위치로 돌아온다.-->
+        <a href="{% url 'subscribeapp:list' %}" class="header_nav">
+            <span>Subscriptions</span>
+        </a>
+        <a href="{% url 'accountapp:detail' pk=user.pk %}" class="header_nav">
+            <span>MyPage</span>
+        </a>
+
+        <a href="{% url 'accountapp:logout' %}?next={{ request.path }}" class="header_nav">
+            <span>Logout</span>
+        </a>
+        {% endif %}
+    </div>
+</div>

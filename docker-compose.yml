@@ -1,0 +1,75 @@
+version: "3.8"
+services:
+  certbot:
+    image: certbot/certbot
+    restart: always
+    volumes:
+      - /home/certbot/conf:/etc/letsencrypt
+      - /home/certbot/www:/var/www/certbot
+      - /home/certbot/log:/var/log/letsencrypt
+    networks:
+      - network
+    entrypoint: "/bin//sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+  nginx:
+    image: nginx:1.19.5
+    container_name: nginx
+    restart: always
+    networks:
+      - network
+    volumes:
+      - /home/django_course/nginx.conf:/etc/nginx/nginx.conf
+      - static:/data/static
+      - media:/data/
+      - /home/certbot/conf:/etc/letsencrypt
+      - /home/certbot/www:/var/www/certbot
+    ports:
+      - 80:80
+      - 443:443
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+  django_container_gunicorn:
+    image: django_image_gunicorn:1
+    container_name: django_container_gunicorn
+    networks:
+      - network
+    volumes:
+      - static:/home/My-Home/staticfiles
+      - media:/home/My-Home/media
+    deploy:
+      labels:
+        - "com.docker.stack.namespace="
+    depends_on:
+      - mariadb
+  mariadb:
+    image: mariadb:10.5
+    container_name: mariadb
+    networks:
+      - network
+    volumes:
+      - database:/var/lib/mysql
+    environment:
+      MARIADB_DATABASE: django_homepage
+      MARIADB_USER: jake
+      MARIADB_ROOT_PASSWORD: $(MARIADB_ROOT_PASSWORD)
+      MARIADB_PASSWORD: $(MARIADB_PASSWORD)
+    deploy:
+      labels:
+        - "com.docker.stack.namespace="
+
+networks:
+  network:
+
+volumes:
+  static:
+  media:
+  database:
+
+
+
+
+
+
+
+
+
+
+
