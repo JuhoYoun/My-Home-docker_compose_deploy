@@ -26,9 +26,9 @@ services:
       - 80:80
       - 443:443
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
-  django_container_gunicorn:
-    image: django_image_gunicorn:1
-    container_name: django_container_gunicorn
+  django_container_gunicorn_docker-compose-deploy:
+    image: django_image_gunicorn_docker-compose-deploy:1
+    container_name: django_container_gunicorn_docker-compose-deploy
     networks:
       - network
     volumes:
